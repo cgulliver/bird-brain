@@ -1,5 +1,5 @@
 
-""" A sample lambda for bird detection"""
+""" A sample lambda for bird detection with S3 upload"""
 from threading import Thread, Event
 import os
 import json
