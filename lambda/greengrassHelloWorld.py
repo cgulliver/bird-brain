@@ -18,7 +18,7 @@ bucket_name = ''
 # Confidence threshold percent to save bird image
 prob_thresh = 0.50
 # Number of birds to store in S3 before rotating count
-bird_hist = 50
+bird_hist = 100
 
 
 class LocalDisplay(Thread):
