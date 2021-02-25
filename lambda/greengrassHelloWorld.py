@@ -180,20 +180,21 @@ def infinite_infer_run():
                         bird_number = 1
                     else:
                         bird_number = bird_number + 1
-                    message = "uploading to s3..."
-                    client.publish(topic=iot_topic, payload = message)
                     #key = 'img/birdbrain/frame-' + time.strftime("%Y%m%d-%H%M%S") + '.jpg'
                     key = 'img/birdbrain/bird-' + str(bird_number) + '.jpg'
+                    message = '{"Info": "Uploading file to S3"}'
+                    client.publish(topic=iot_topic, payload = message)
                     session = Session()
                     s3 = session.create_client('s3')
                     resize = cv2.resize(frame, None, fx=0.5, fy=0.5, interpolation=cv2.INTER_AREA)
                     _, jpg_data = cv2.imencode('.jpg', resize)
                     result = s3.put_object(ACL='bucket-owner-full-control', Body=jpg_data.tostring(), Bucket=bucket_name, \
                                 Key=key, ContentType='image/jpeg', CacheControl='max-age=1200')
-                    message = "uploaded to s3: " + key
+                    message = '{"Info": "Uploaded file, %s to S3"}' % key
                     client.publish(topic=iot_topic, payload = message)
                     cooldown = time_now + datetime.timedelta(seconds = 25)
                     client.publish(topic=iot_topic, payload=json.dumps(cloud_output))
+
 
     except Exception as ex:
         client.publish(topic=iot_topic, payload='Error in bird detection lambda: {}'.format(ex))
